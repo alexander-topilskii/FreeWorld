@@ -1,4 +1,4 @@
-package com.talex.game.superjumper;
+package com.talex.game.superjumper.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Align;
+import com.talex.game.superjumper.Animation;
+import com.talex.game.superjumper.Assets;
+import com.talex.game.superjumper.SuperJumper;
 import com.talex.game.superjumper.screens.MainMenuScreen;
 
 public class WinScreen extends ScreenAdapter {

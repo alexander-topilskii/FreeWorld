@@ -39,7 +39,7 @@ public class MainMenuScreen extends ScreenAdapter {
 		this.game = game;
 
 		guiCam = new OrthographicCamera(320, 480);
-		guiCam.position.set(320 / 2, 480 / 2, 0);
+		guiCam.position.set(320 / 2f, 480 / 2f, 0);
 		soundBounds = new Rectangle(0, 0, 64, 64);
 		playBounds = new Rectangle(160 - 150, 200 + 18, 300, 36);
 		highscoresBounds = new Rectangle(160 - 150, 200 - 18, 300, 36);
@@ -91,8 +91,8 @@ public class MainMenuScreen extends ScreenAdapter {
 
 		game.batcher.enableBlending();
 		game.batcher.begin();
-		game.batcher.draw(Assets.logo, 160 - 274 / 2, 480 - 10 - 142, 274, 142);
-		game.batcher.draw(Assets.mainMenu, 10, 200 - 110 / 2, 300, 110);
+		game.batcher.draw(Assets.logo, 160 - 274 / 2f, 480 - 10 - 142, 274, 142);
+		game.batcher.draw(Assets.mainMenu, 10, 200 - 110 / 2f, 300, 110);
 		game.batcher.draw(Settings.soundEnabled ? Assets.soundOn : Assets.soundOff, 0, 0, 64, 64);
 		game.batcher.end();	
 	}
