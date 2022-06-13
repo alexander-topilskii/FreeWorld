@@ -16,6 +16,8 @@
 
 package com.talex.game.superjumper;
 
+import com.talex.game.superjumper.gameobjects.GameObject;
+
 public class Spring extends GameObject {
 	public static float SPRING_WIDTH = 0.3f;
 	public static float SPRING_HEIGHT = 0.3f;

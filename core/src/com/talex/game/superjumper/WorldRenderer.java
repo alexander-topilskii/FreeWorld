@@ -19,6 +19,7 @@ package com.talex.game.superjumper;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.talex.game.superjumper.gameobjects.*;
 
 public class WorldRenderer {
 	static final float FRUSTUM_WIDTH = 10;

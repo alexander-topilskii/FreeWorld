@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.talex.game.superjumper;
+package com.talex.game.superjumper.screens;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.talex.game.superjumper.*;
 
 public class GameScreen extends ScreenAdapter {
 	static final int GAME_READY = 0;

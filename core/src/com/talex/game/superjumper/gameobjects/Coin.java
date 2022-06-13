@@ -14,14 +14,21 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.talex.game.superjumper;
+package com.talex.game.superjumper.gameobjects;
 
-public class Castle extends GameObject {
-	public static float CASTLE_WIDTH = 1.7f;
-	public static float CASTLE_HEIGHT = 1.7f;
+public class Coin extends GameObject {
+	public static final float COIN_WIDTH = 0.5f;
+	public static final float COIN_HEIGHT = 0.8f;
+	public static final int COIN_SCORE = 10;
 
-	public Castle (float x, float y) {
-		super(x, y, CASTLE_WIDTH, CASTLE_HEIGHT);
+    public float stateTime;
+
+	public Coin (float x, float y) {
+		super(x, y, COIN_WIDTH, COIN_HEIGHT);
+		stateTime = 0;
 	}
 
+	public void update (float deltaTime) {
+		stateTime += deltaTime;
+	}
 }

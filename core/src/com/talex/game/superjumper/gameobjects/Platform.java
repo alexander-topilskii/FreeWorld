@@ -14,7 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.talex.game.superjumper;
+package com.talex.game.superjumper.gameobjects;
+
+import com.talex.game.superjumper.World;
+import com.talex.game.superjumper.gameobjects.DynamicGameObject;
 
 public class Platform extends DynamicGameObject {
 	public static final float PLATFORM_WIDTH = 2;
@@ -26,9 +29,9 @@ public class Platform extends DynamicGameObject {
 	public static final float PLATFORM_PULVERIZE_TIME = 0.2f * 4;
 	public static final float PLATFORM_VELOCITY = 2;
 
-	int type;
-	int state;
-	float stateTime;
+	public int type;
+	public int state;
+	public float stateTime;
 
 	public Platform (int type, float x, float y) {
 		super(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT);

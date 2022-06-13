@@ -18,6 +18,7 @@ package com.talex.game.superjumper;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.talex.game.superjumper.screens.MainMenuScreen;
 
 public class SuperJumper extends Game {
 	// used by all screens
