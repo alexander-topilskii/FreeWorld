@@ -1,33 +1,52 @@
-package com.talex.game.freeworld;
+package com.talex.game.freeworld
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Game
+import com.talex.game.freeworld.FreeWorldScreen
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-public class Entity implements Comparable {
-	float x, y;
-	float xChange, yChange;
-	float width, height;
-	float xVelocity, yVelocity;
-	TextureRegion image;
-	Animation<TextureRegion> down, up, left, right;
-	boolean isMe, isNpc;
-	int minDistance = 2;
-	String startLayer;
-	float drawTime = -1;
-	float attackTime = 0, stamina = 1;
-	Entity related;
-	int health, damage;
+class Entity : Comparable<Any?> {
+    var x = 0f
+    var y = 0f
+    var xChange = 0f
+    var yChange = 0f
+    var width = 0f
+    var height = 0f
+    var xVelocity = 0f
+    var yVelocity = 0f
+    var image: TextureRegion? = null
+    var down: Animation<TextureRegion?>? = null
+    var up: Animation<TextureRegion?>? = null
+    var left: Animation<TextureRegion?>? = null
+    var right: Animation<TextureRegion?>? = null
+    var isMe = false
+    var isNpc = false
+    var minDistance = 2
+    var startLayer: String? = null
+    var drawTime = -1f
+    var attackTime = 0f
+    var stamina = 1f
+    var related: Entity? = null
+    var health = 0
+    var damage = 0
+    override fun compareTo(o: Any?): Int {
+        val e = o as Entity?
+        return if (y > e!!.y) {
+            -1
+        } else 1
+    }
 
-	public int compareTo(Object o) {
-		Entity e = (Entity) o;
-		if (y > e.y) {
-			return -1;
-		}
-		return 1;
-	}
+    enum class Direction {
+        DOWN, UP, LEFT, RIGHT
+    }
 
-	enum Direction {
-		DOWN, UP, LEFT, RIGHT
-	};
-	Direction lastDirection = Direction.DOWN;
+    var lastDirection = Direction.DOWN
 }

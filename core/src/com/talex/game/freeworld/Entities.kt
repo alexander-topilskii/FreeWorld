@@ -1,268 +1,252 @@
-package com.talex.game.freeworld;
+package com.talex.game.freeworld
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Game
+import com.badlogic.gdx.Input
+import com.talex.game.freeworld.FreeWorldScreen
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import java.util.ArrayList
 
-import java.util.ArrayList;
+object Entities {
+    fun create(
+        startLayer: String?,
+        down: TextureRegion?,
+        up: TextureRegion?,
+        standRight: TextureRegion?,
+        walkRight: TextureRegion?
+    ): Entity {
+        val player = Entity()
+        player.width = 2f
+        player.height = 2f
+        player.xVelocity = 0f
+        player.yVelocity = 0f
+        player.minDistance = 5
+        player.startLayer = startLayer
+        val duration = 0.2f
+        player.down = Animation<TextureRegion?>(duration, down, Utils.flipX(down))
+        player.up = Animation<TextureRegion?>(duration, up, Utils.flipX(up))
+        player.right = Animation<TextureRegion?>(duration, standRight, walkRight)
+        player.left = Animation<TextureRegion?>(duration, Utils.flipX(standRight), Utils.flipX(walkRight))
+        player.image = down
+        return player
+    }
 
-public class Entities {
-	public static Entity create(String startLayer, TextureRegion down, TextureRegion up, TextureRegion standRight, TextureRegion walkRight) {
-		Entity player = new Entity();
-		player.width = 2;
-		player.height = 2;
-		player.xVelocity = 0;
-		player.yVelocity = 0;
-		player.minDistance = 5;
-		player.startLayer = startLayer;
+    fun create(startLayer: String?, down: TextureRegion?, up: TextureRegion?): Entity {
+        val player = Entity()
+        player.width = 2f
+        player.height = 2f
+        player.xVelocity = 0f
+        player.yVelocity = 0f
+        player.minDistance = 5
+        player.startLayer = startLayer
+        val duration = 0.2f
+        val anim: Animation<TextureRegion?> = Animation<TextureRegion?>(duration, down, up)
+        player.down = anim
+        player.up = anim
+        player.right = anim
+        player.left = anim
+        player.image = down
+        return player
+    }
 
-		float duration = 0.2f;
-		player.down = new Animation(duration, down, Utils.flipX(down));
-		player.up = new Animation(duration, up, Utils.flipX(up));
-		player.right = new Animation(duration, standRight, walkRight);
-		player.left = new Animation(duration, Utils.flipX(standRight), Utils.flipX(walkRight));
+    fun create(startLayer: String?, img: TextureRegion?): Entity {
+        val player = Entity()
+        player.width = 2f
+        player.height = 2f
+        player.xVelocity = 0f
+        player.yVelocity = 0f
+        player.startLayer = startLayer
+        player.image = img
+        return player
+    }
 
-		player.image = down;
+    fun move(e: Entity?, player: Entity?, delta: Float): Boolean {
+        val maxVelocity = 5f
+        val maxNpcVelocity = 3f
+        if (e!!.isMe) {
+            e.attackTime = Math.max(0f, e.attackTime - delta)
+            val downTouched = Gdx.input.isTouched && Gdx.input.y > Gdx.graphics.height * 2 / 3
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || downTouched) {
+                e.yVelocity = -1 * maxVelocity
+            }
+            val upTouched = Gdx.input.isTouched && Gdx.input.y < Gdx.graphics.height / 3
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) || upTouched) {
+                e.yVelocity = maxVelocity
+            }
+            val leftTouched = Gdx.input.isTouched && Gdx.input.x < Gdx.graphics.width / 3
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || leftTouched) {
+                e.xVelocity = -1 * maxVelocity
+            }
+            val rightTouched = Gdx.input.isTouched && Gdx.input.x > Gdx.graphics.width * 2 / 3
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || rightTouched) {
+                e.xVelocity = maxVelocity
+            }
+        } else if (e.isNpc) {
+            if (e.attackTime == 0f) {
+                e.attackTime = 1f
+            }
+            e.attackTime = Math.max(0f, e.attackTime - delta)
+            if (Utils.isNearEntity(e, player, 6)) {
+                val xDiff = e.x - player!!.x
+                val yDiff = e.y - player.y
+                val closeEnough = 1.5f
+                if (xDiff > closeEnough) {
+                    e.xVelocity = -1 * maxNpcVelocity
+                } else if (xDiff < -1 * closeEnough) {
+                    e.xVelocity = maxNpcVelocity
+                }
+                if (yDiff > closeEnough) {
+                    e.yVelocity = -1 * maxNpcVelocity
+                } else if (yDiff < -1 * closeEnough) {
+                    e.yVelocity = maxNpcVelocity
+                }
+            } else if (e.attackTime == 0f) {
+                e.xVelocity = maxNpcVelocity * Utils.random()
+                e.yVelocity = maxNpcVelocity * Utils.random()
+            }
+        }
+        e.xChange = e.xVelocity * delta
+        e.yChange = e.yVelocity * delta
+        e.x = e.x + e.xChange
+        e.y = e.y + e.yChange
+        e.xVelocity = Utils.decelerate(e.xVelocity)
+        e.yVelocity = Utils.decelerate(e.yVelocity)
+        return e.xChange != 0f || e.yChange != 0f
+    }
 
-		return player;
-	}
-	
-	public static Entity create(String startLayer, TextureRegion down, TextureRegion up) {
-		Entity player = new Entity();
-		player.width = 2;
-		player.height = 2;
-		player.xVelocity = 0;
-		player.yVelocity = 0;
-		player.minDistance = 5;
-		player.startLayer = startLayer;
+    fun animate(e: Entity?, time: Float, map: TiledMap?) {
+        var anim: Animation<*>? = null
+        if (e!!.yVelocity != 0f) {
+            if (e.yVelocity > 0) {
+                anim = e.up
+                e.lastDirection = Entity.Direction.UP
+            } else {
+                anim = e.down
+                e.lastDirection = Entity.Direction.DOWN
+            }
+        } else if (e.xVelocity != 0f) {
+            if (e.xVelocity > 0) {
+                anim = e.right
+                e.lastDirection = Entity.Direction.RIGHT
+            } else {
+                anim = e.left
+                e.lastDirection = Entity.Direction.LEFT
+            }
+        }
+        if (anim != null) {
+            e.image = anim.getKeyFrame(time, true) as TextureRegion
+        }
+        if (Utils.isOnLayer(e, map, "water")) {
+            e.image = TextureRegion(e.image)
+            e.image!!.regionHeight = Utils.pixelsPerTile.toInt()
+        }
+        e.width = e.image!!.regionWidth / Utils.pixelsPerTile
+        e.height = e.image!!.regionHeight / Utils.pixelsPerTile
+    }
 
-		float duration = 0.2f;
-		Animation anim = new Animation(duration, down, up);
-		player.down = anim;
-		player.up = anim;
-		player.right = anim;
-		player.left = anim;
+    fun preventMove(e: Entity?, entities: ArrayList<Entity?>?) {
+        if (Utils.isNearEntity(e, entities, 1) || !Utils.isOnMap(e)) {
+            e!!.x = e.x - e.xChange
+            e.y = e.y - e.yChange
+            e.xVelocity = 0f
+            e.yVelocity = 0f
+        }
+    }
 
-		player.image = down;
+    fun attack(e: Entity?, entities: ArrayList<Entity?>?, swipe: Entity?, hit: Entity?, map: TiledMap?) {
+        if (Utils.isOnLayer(e, map, "water")) {
+            return
+        }
+        var victim: Entity? = null
+        for (e2 in entities!!) {
+            if (Utils.canAttack(e, e2)) {
+                var xIsGood = false
+                var yIsGood = false
+                when (e!!.lastDirection) {
+                    Entity.Direction.DOWN -> {
+                        xIsGood = true
+                        yIsGood = e.y - e2!!.y > 0
+                    }
+                    Entity.Direction.UP -> {
+                        xIsGood = true
+                        yIsGood = e.y - e2!!.y < 0
+                    }
+                    Entity.Direction.RIGHT -> {
+                        xIsGood = e.x - e2!!.x < 0
+                        yIsGood = true
+                    }
+                    Entity.Direction.LEFT -> {
+                        xIsGood = e.x - e2!!.x > 0
+                        yIsGood = true
+                    }
+                }
+                if (xIsGood && yIsGood) {
+                    victim = e2
+                    break
+                }
+            }
+        }
+        if (e!!.isMe && e.health > 0) {
+            swipe!!.related = e
+            swipe.drawTime = 0.2f
+        }
+        hit!!.related = victim
+        if (victim != null) {
+            hit.drawTime = 0.2f
+            victim.health = Math.max(0, victim.health - e.damage)
+            e.attackTime = Math.min(e.stamina, e.attackTime + 1)
+            if (victim.isMe) {
+                Utils.playerHurt!!.play()
+                if (victim.health == 0) {
+                    Utils.death!!.play()
+                }
+            } else {
+                Utils.monsterHurt!!.play()
+            }
+        }
+    }
 
-		return player;
-	}
+    fun animateSwipe(swipe: Entity?) {
+        if (swipe!!.related == null) {
+            return
+        }
+        when (swipe.related!!.lastDirection) {
+            Entity.Direction.DOWN -> {
+                swipe.x = swipe.related!!.x
+                swipe.y = swipe.related!!.y - 1
+                swipe.image = swipe.down!!.getKeyFrame(0f, true) as TextureRegion
+            }
+            Entity.Direction.UP -> {
+                swipe.x = swipe.related!!.x
+                swipe.y = swipe.related!!.y + 1
+                swipe.image = swipe.up!!.getKeyFrame(0f, true) as TextureRegion
+            }
+            Entity.Direction.RIGHT -> {
+                swipe.x = swipe.related!!.x + 1
+                swipe.y = swipe.related!!.y
+                swipe.image = swipe.right!!.getKeyFrame(0f, true) as TextureRegion
+            }
+            Entity.Direction.LEFT -> {
+                swipe.x = swipe.related!!.x - 1
+                swipe.y = swipe.related!!.y
+                swipe.image = swipe.left!!.getKeyFrame(0f, true)
+            }
+        }
+    }
 
-	public static Entity create(String startLayer, TextureRegion img) {
-		Entity player = new Entity();
-		player.width = 2;
-		player.height = 2;
-		player.xVelocity = 0;
-		player.yVelocity = 0;
-		player.startLayer = startLayer;
-		player.image = img;
-
-		return player;
-	}
-
-	public static boolean move(Entity e, Entity player, float delta) {
-		float maxVelocity = 5;
-		float maxNpcVelocity = 3;
-		
-		if (e.isMe == true) {
-			e.attackTime = Math.max(0, e.attackTime - delta);
-			
-			boolean downTouched = Gdx.input.isTouched() && Gdx.input.getY() > Gdx.graphics.getHeight() * 2 / 3;
-			if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || downTouched) {
-				e.yVelocity = -1 * maxVelocity;
-			}
-			
-			boolean upTouched = Gdx.input.isTouched() && Gdx.input.getY() < Gdx.graphics.getHeight() / 3;
-			if (Gdx.input.isKeyPressed(Input.Keys.UP) || upTouched) {
-				e.yVelocity = maxVelocity;
-			}
-			
-			boolean leftTouched = Gdx.input.isTouched() && Gdx.input.getX() < Gdx.graphics.getWidth() / 3;
-			if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || leftTouched) {
-				e.xVelocity = -1 * maxVelocity;
-			}
-			
-			boolean rightTouched = Gdx.input.isTouched() && Gdx.input.getX() > Gdx.graphics.getWidth() * 2 / 3;
-			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || rightTouched) {
-				e.xVelocity = maxVelocity;
-			}
-		} else if (e.isNpc == true) {
-			if (e.attackTime == 0) {
-				e.attackTime = 1;
-			}
-			
-			e.attackTime = Math.max(0, e.attackTime - delta);
-			
-			if (Utils.isNearEntity(e, player, 6)) {
-				float xDiff = e.x - player.x;
-				float yDiff = e.y - player.y;
-				float closeEnough = 1.5f;
-				
-				if (xDiff > closeEnough) {
-					e.xVelocity = -1 * maxNpcVelocity;
-				} else if (xDiff < -1 * closeEnough) {
-					e.xVelocity = maxNpcVelocity;
-				}
-
-				if (yDiff > closeEnough) {
-					e.yVelocity = -1 * maxNpcVelocity;
-				} else if (yDiff < -1 * closeEnough) {
-					e.yVelocity = maxNpcVelocity;
-				}
-			} else if (e.attackTime == 0) {
-				e.xVelocity = maxNpcVelocity * Utils.random();
-				e.yVelocity = maxNpcVelocity * Utils.random();
-			}
-		}
-
-		e.xChange = e.xVelocity * delta;
-		e.yChange = e.yVelocity * delta;
-
-		e.x = e.x + e.xChange;
-		e.y = e.y + e.yChange;
-
-		e.xVelocity = Utils.decelerate(e.xVelocity);
-		e.yVelocity = Utils.decelerate(e.yVelocity);
-
-		return e.xChange != 0 || e.yChange != 0;
-	}
-	
-	public static void animate(Entity e, float time, TiledMap map) {
-		Animation anim = null;
-		if (e.yVelocity != 0) {
-			if (e.yVelocity > 0) {
-				anim = e.up;
-				e.lastDirection = Entity.Direction.UP;
-			} else {
-				anim = e.down;
-				e.lastDirection = Entity.Direction.DOWN;
-			}
-		} else if (e.xVelocity != 0) {
-			if (e.xVelocity > 0) {
-				anim = e.right;
-				e.lastDirection = Entity.Direction.RIGHT;
-			} else {
-				anim = e.left;
-				e.lastDirection = Entity.Direction.LEFT;
-			}
-		}
-		
-		if (anim != null) {
-			e.image = (TextureRegion) anim.getKeyFrame(time, true);
-		}
-		
-		if (Utils.isOnLayer(e, map, "water")) {
-			e.image = new TextureRegion(e.image);
-			e.image.setRegionHeight((int) Utils.pixelsPerTile);
-		}
-
-		e.width = e.image.getRegionWidth() / Utils.pixelsPerTile;
-		e.height = e.image.getRegionHeight() / Utils.pixelsPerTile;
-	}
-
-	public static void preventMove(Entity e, ArrayList<Entity> entities) {
-		if (Utils.isNearEntity(e, entities, 1) || !Utils.isOnMap(e)) {
-			e.x = e.x - e.xChange;
-			e.y = e.y - e.yChange;
-			e.xVelocity = 0;
-			e.yVelocity = 0;
-		}
-	}
-
-	public static void attack(Entity e, ArrayList<Entity> entities, Entity swipe, Entity hit, TiledMap map) {
-		if (Utils.isOnLayer(e, map, "water")) {
-			return;
-		}
-		
-		Entity victim = null;
-		for (Entity e2 : entities) {
-			if (Utils.canAttack(e, e2)) {
-				boolean xIsGood = false, yIsGood = false;
-				switch (e.lastDirection) {
-					case DOWN:
-						xIsGood = true;
-						yIsGood = e.y - e2.y > 0;
-						break;
-					case UP:
-						xIsGood = true;
-						yIsGood = e.y - e2.y < 0;
-						break;
-					case RIGHT:
-						xIsGood = e.x - e2.x < 0;
-						yIsGood = true;
-						break;
-					case LEFT:
-						xIsGood = e.x - e2.x > 0;
-						yIsGood = true;
-						break;
-				}
-				if (xIsGood && yIsGood) {
-					victim = e2;
-					break;
-				}
-			}
-		}
-		
-		if (e.isMe && e.health > 0) {
-			swipe.related = e;
-			swipe.drawTime = 0.2f;
-		}
-
-		hit.related = victim;
-		if (victim != null) {
-			hit.drawTime = 0.2f;
-			victim.health = Math.max(0, victim.health - e.damage);
-			
-			e.attackTime = Math.min(e.stamina, e.attackTime + 1);
-			
-			if (victim.isMe == true) {
-				Utils.playerHurt.play();
-				if (victim.health == 0) {
-					Utils.death.play();
-				}
-			} else {
-				Utils.monsterHurt.play();
-			}
-		}
-	}
-
-	public static void animateSwipe(Entity swipe) {
-		if (swipe.related == null) {
-			return;
-		}
-		
-		switch (swipe.related.lastDirection) {
-			case DOWN:
-				swipe.x = swipe.related.x;
-				swipe.y = swipe.related.y - 1;
-				swipe.image = (TextureRegion) swipe.down.getKeyFrame(0, true);
-				break;
-			case UP:
-				swipe.x = swipe.related.x;
-				swipe.y = swipe.related.y + 1;
-				swipe.image = (TextureRegion) swipe.up.getKeyFrame(0, true);
-				break;
-			case RIGHT:
-				swipe.x = swipe.related.x + 1;
-				swipe.y = swipe.related.y;
-				swipe.image = (TextureRegion) swipe.right.getKeyFrame(0, true);
-				break;
-			case LEFT:
-				swipe.x = swipe.related.x - 1;
-				swipe.y = swipe.related.y;
-				swipe.image = swipe.left.getKeyFrame(0, true);
-				break;
-		}
-	}
-
-	public static void animateHit(Entity hit) {
-		if (hit.related == null) {
-			return;
-		}
-		
-		hit.x = hit.related.x;
-		hit.y = hit.related.y - 0.1f;
-	}
+    fun animateHit(hit: Entity?) {
+        if (hit!!.related == null) {
+            return
+        }
+        hit.x = hit.related!!.x
+        hit.y = hit.related!!.y - 0.1f
+    }
 }
