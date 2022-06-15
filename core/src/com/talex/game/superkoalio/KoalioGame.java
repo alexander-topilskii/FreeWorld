@@ -1,10 +1,9 @@
-package com.talex.game.minicraft;
+package com.talex.game.superkoalio;
 
 import com.badlogic.gdx.Game;
 
-public class MyGdxGame extends Game {
+public class KoalioGame extends Game {
 	public void create() {
 		this.setScreen(new MainScreen());
 	}
 }
-
