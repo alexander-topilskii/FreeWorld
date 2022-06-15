@@ -25,6 +25,7 @@ class FreeWorldScreen : Screen {
     var time = 0f
     var hearts: ArrayList<Image?>? = null
     var bolts: ArrayList<Image?>? = null
+
     override fun show() {
         time = 0f
         map = TmxMapLoader().load("level1.tmx")
