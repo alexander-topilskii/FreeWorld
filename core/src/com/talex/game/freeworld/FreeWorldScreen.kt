@@ -4,8 +4,6 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import com.talex.game.freeworld.FreeWorldScreen
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
@@ -48,26 +46,26 @@ class FreeWorldScreen : Screen {
         val heartOnTexture = TextureRegion(tiles, 80, 0, 8, 8)
         val boltOnTexture = TextureRegion(tiles, 88, 0, 8, 8)
         val blackTexture = TextureRegion(tiles, 0, 18, 1, 1)
-        player = Entities.create("grass", grid[6][0], grid[6][1], grid[6][2], grid[6][3])
+        player = Entities.createPlayer("grass", grid[6][0], grid[6][1], grid[6][2], grid[6][3])
         player!!.isMe = true
         player!!.health = 10
         player!!.stamina = 5f
         player!!.damage = 4
         entities = ArrayList()
         entities!!.add(player)
-        swipe = Entities.create("grass",
+        swipe = Entities.createPlayer("grass",
             attackDownTexture,
             Utils.flipY(attackDownTexture),
             attackRightTexture,
             attackRightTexture)
         swipe!!.drawTime = 0f
         entities!!.add(swipe)
-        hit = Entities.create("grass", hitTexture)
+        hit = Entities.createPlayer("grass", hitTexture)
         hit!!.drawTime = 0f
         entities!!.add(hit)
         var zombieCount = 5
         while (zombieCount > 0) {
-            val zombie = Entities.create("grass", grid[6][4], grid[6][5], grid[6][6], grid[6][7])
+            val zombie = Entities.createPlayer("grass", grid[6][4], grid[6][5], grid[6][6], grid[6][7])
             zombie.isNpc = true
             zombie.health = 10
             zombie.damage = 3
@@ -76,7 +74,7 @@ class FreeWorldScreen : Screen {
         }
         var slimeCount = 5
         while (slimeCount > 0) {
-            val slime = Entities.create("grass", grid[7][4], grid[7][5])
+            val slime = Entities.createPlayer("grass", grid[7][4], grid[7][5])
             slime.isNpc = true
             slime.health = 10
             slime.damage = 2
@@ -85,14 +83,14 @@ class FreeWorldScreen : Screen {
         }
         var treeCount = 100
         while (treeCount > 0) {
-            val tree = Entities.create("grass", treeTexture)
+            val tree = Entities.createPlayer("grass", treeTexture)
             tree.health = 12
             entities!!.add(tree)
             treeCount = treeCount - 1
         }
         var cactusCount = 10
         while (cactusCount > 0) {
-            val cactus = Entities.create("desert", cactusTexture)
+            val cactus = Entities.createPlayer("desert", cactusTexture)
             cactus.damage = 3
             cactus.health = 12
             entities!!.add(cactus)

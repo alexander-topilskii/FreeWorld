@@ -2,70 +2,69 @@ package com.talex.game.freeworld
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Game
 import com.badlogic.gdx.Input
-import com.talex.game.freeworld.FreeWorldScreen
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.maps.tiled.TmxMapLoader
-import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import java.util.ArrayList
 
 object Entities {
-    fun create(
-        startLayer: String?,
-        down: TextureRegion?,
-        up: TextureRegion?,
+
+    fun createPlayer(
+        _startLayer: String?,
+        _down: TextureRegion?,
+        _up: TextureRegion?,
         standRight: TextureRegion?,
-        walkRight: TextureRegion?
+        walkRight: TextureRegion?,
+        duration: Float = 0.2f,
     ): Entity {
-        val player = Entity()
-        player.width = 2f
-        player.height = 2f
-        player.xVelocity = 0f
-        player.yVelocity = 0f
-        player.minDistance = 5
-        player.startLayer = startLayer
-        val duration = 0.2f
-        player.down = Animation<TextureRegion?>(duration, down, Utils.flipX(down))
-        player.up = Animation<TextureRegion?>(duration, up, Utils.flipX(up))
-        player.right = Animation<TextureRegion?>(duration, standRight, walkRight)
-        player.left = Animation<TextureRegion?>(duration, Utils.flipX(standRight), Utils.flipX(walkRight))
-        player.image = down
-        return player
+        return Entity().apply {
+            width = 2f
+            height = 2f
+            xVelocity = 0f
+            yVelocity = 0f
+            minDistance = 5
+            startLayer = _startLayer
+
+            down = Animation<TextureRegion?>(duration, _down, Utils.flipX(_down))
+            up = Animation<TextureRegion?>(duration, _up, Utils.flipX(_up))
+            right = Animation<TextureRegion?>(duration, standRight, walkRight)
+            left = Animation<TextureRegion?>(duration, Utils.flipX(standRight), Utils.flipX(walkRight))
+            image = _down
+        }
     }
 
-    fun create(startLayer: String?, down: TextureRegion?, up: TextureRegion?): Entity {
-        val player = Entity()
-        player.width = 2f
-        player.height = 2f
-        player.xVelocity = 0f
-        player.yVelocity = 0f
-        player.minDistance = 5
-        player.startLayer = startLayer
-        val duration = 0.2f
-        val anim: Animation<TextureRegion?> = Animation<TextureRegion?>(duration, down, up)
-        player.down = anim
-        player.up = anim
-        player.right = anim
-        player.left = anim
-        player.image = down
-        return player
+    fun createPlayer(
+        _startLayer: String?,
+        _down: TextureRegion?,
+        _up: TextureRegion?,
+        duration: Float = 0.2f,
+        anim: Animation<TextureRegion?> = Animation<TextureRegion?>(duration, _down, _up),
+    ): Entity {
+        return Entity().apply {
+            width = 2f
+            height = 2f
+            xVelocity = 0f
+            yVelocity = 0f
+            minDistance = 5
+            startLayer = _startLayer
+
+            down = anim
+            up = anim
+            right = anim
+            left = anim
+            image = _down
+        }
     }
 
-    fun create(startLayer: String?, img: TextureRegion?): Entity {
-        val player = Entity()
-        player.width = 2f
-        player.height = 2f
-        player.xVelocity = 0f
-        player.yVelocity = 0f
-        player.startLayer = startLayer
-        player.image = img
-        return player
+    fun createPlayer(_startLayer: String?, img: TextureRegion?): Entity {
+        return Entity().apply {
+            width = 2f
+            height = 2f
+            xVelocity = 0f
+            yVelocity = 0f
+            startLayer = _startLayer
+            image = img
+        }
     }
 
     fun move(e: Entity?, player: Entity?, delta: Float): Boolean {
