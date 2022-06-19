@@ -1,19 +1,10 @@
 package com.talex.game.freeworld
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Game
-import com.talex.game.freeworld.FreeWorldScreen
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.maps.tiled.TmxMapLoader
-import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import kotlin.math.max
 
-class Entity : Comparable<Any?> {
+class Entity : Comparable<Entity?> {
     var x = 0f
     var y = 0f
     var xChange = 0f
@@ -37,11 +28,16 @@ class Entity : Comparable<Any?> {
     var related: Entity? = null
     var health = 0
     var damage = 0
-    override fun compareTo(o: Any?): Int {
-        val e = o as Entity?
-        return if (y > e!!.y) {
-            -1
-        } else 1
+
+    override fun compareTo(other: Entity?): Int {
+        other ?: return 1
+        return if (y > other.y) -1 else 1
+    }
+
+    fun updateDrawTime(delta: Float) {
+        if (drawTime >= 0) {
+            drawTime = max(0f, drawTime - delta)
+        }
     }
 
     enum class Direction {

@@ -22,7 +22,7 @@ object Utils {
     var pixelsPerTile = 8f
     var mapWidth = 50
     var mapHeight = 50
-    var cameraHeight = 20f
+    var cameraHeight = 60f
     var stageWidth = 150f
     var start: Sound? = null
     var playerHurt: Sound? = null
@@ -94,7 +94,7 @@ object Utils {
         return xDiff < minDistance && yDiff < minDistance
     }
 
-    fun isNearEntity(e: Entity?, entities: ArrayList<Entity?>?, minDistance: Int): Boolean {
+    fun isNearEntity(e: Entity?, entities: List<Entity?>?, minDistance: Int): Boolean {
         for (e2 in entities!!) {
             if (isNearEntity(e, e2, minDistance)) {
                 return true
@@ -103,8 +103,8 @@ object Utils {
         return false
     }
 
-    fun getLocationOptions(width: Float, height: Float, mapWidth: Int, mapHeight: Int): ArrayList<Entity> {
-        val options = ArrayList<Entity>()
+    fun getLocationOptions(width: Float, height: Float, mapWidth: Int, mapHeight: Int): MutableList<Entity> {
+        val options = mutableListOf<Entity>()
         val endX = mapWidth - width.toInt()
         val endY = mapHeight - height.toInt()
         var x = 0
@@ -153,13 +153,13 @@ object Utils {
         }
     }
 
-    private fun swap(list: ArrayList<Entity>?, idx1: Int, idx2: Int) {
+    private fun swap(list: MutableList<Entity>?, idx1: Int, idx2: Int) {
         val o1 = list!![idx1]
         list[idx1] = list[idx2]
         list[idx2] = o1
     }
 
-    fun shuffle(objects: ArrayList<Entity>?) {
+    fun shuffle(objects: MutableList<Entity>?) {
         for (i in objects!!.size downTo 2) {
             swap(objects, i - 1, Random().nextInt(i))
         }

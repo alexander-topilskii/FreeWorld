@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.Animation
 import java.util.ArrayList
+import kotlin.math.max
 
 object Entities {
 
@@ -151,7 +152,7 @@ object Entities {
         e.height = e.image!!.regionHeight / Utils.pixelsPerTile
     }
 
-    fun preventMove(e: Entity?, entities: ArrayList<Entity?>?) {
+    fun preventMove(e: Entity?, entities: List<Entity?>?) {
         if (Utils.isNearEntity(e, entities, 1) || !Utils.isOnMap(e)) {
             e!!.x = e.x - e.xChange
             e.y = e.y - e.yChange
@@ -160,7 +161,7 @@ object Entities {
         }
     }
 
-    fun attack(e: Entity?, entities: ArrayList<Entity?>?, swipe: Entity?, hit: Entity?, map: TiledMap?) {
+    fun attack(e: Entity?, entities: List<Entity?>?, swipe: Entity?, hit: Entity?, map: TiledMap?) {
         if (Utils.isOnLayer(e, map, "water")) {
             return
         }
