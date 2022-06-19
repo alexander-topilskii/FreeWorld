@@ -73,16 +73,6 @@ project(":android") {
     }
 }
 
-project(":core") {
-    apply plugin: "java-library"
-
-
-    dependencies {
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        implementation project(":utils")
-    }
-}
-
 project(":html") {
     apply plugin: "java-library"
     apply plugin: "gwt"

@@ -1,4 +1,4 @@
-package com.talex.game.tetris;
+package main.java.com.talex.utils;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;

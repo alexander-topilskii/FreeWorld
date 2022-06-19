@@ -1,4 +1,4 @@
-package com.talex.game.minicraft;
+package main.java.com.talex.minicraft;
 
 import com.badlogic.gdx.Game;
 

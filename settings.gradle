@@ -1,2 +1,3 @@
-include 'desktop', 'android', 'core', 'html', 'utils'
+include 'desktop', 'android', 'core', 'html', 'utils', 'minicraft', 'tetris', 'dungeoncrawler'
+
 

@@ -1,9 +1,8 @@
-package com.talex.game.minicraft;
+package main.java.com.talex.minicraft;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import java.util.*;
 
 public class Entity implements Comparable {
 	float x, y;
