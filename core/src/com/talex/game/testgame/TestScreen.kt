@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.talex.game.freeworld.Entities
 import com.talex.game.freeworld.Entity
 import com.talex.game.freeworld.Utils
+import com.talex.utils.Kutils
 import kotlin.math.max
 
 class TestScreen : EmptyScreen {
@@ -85,7 +86,6 @@ class TestScreen : EmptyScreen {
             }
         }
 
-        Kutils
         e.xChange = e.xVelocity * delta
         e.yChange = e.yVelocity * delta
         e.x = e.x + e.xChange

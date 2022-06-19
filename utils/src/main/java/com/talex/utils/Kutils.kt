@@ -5,6 +5,10 @@ import java.util.*
 
 object Kutils {
 
+    fun lala(){
+        println("GGGG: Kutils:lala")
+    }
+
     fun loadResource(fileName: String?): String {
         var result: String
         Kutils::class.java.getResourceAsStream(fileName).use { `in` -> Scanner(`in`, StandardCharsets.UTF_8.name()).use { scanner -> result = scanner.useDelimiter("\\A").next() } }
