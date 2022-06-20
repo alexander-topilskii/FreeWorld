@@ -18,14 +18,9 @@ class Entity : Comparable<Entity?> {
     var up: Animation<TextureRegion?>? = null
     var left: Animation<TextureRegion?>? = null
     var right: Animation<TextureRegion?>? = null
-    var isMe = false
-    var isNpc = false
     var minDistance = 2
-    var startLayer: String? = null
     var drawTime = -1f
-    var attackTime = 0f
     var stamina = 1f
-    var related: Entity? = null
     var health = 0
     var damage = 0
 

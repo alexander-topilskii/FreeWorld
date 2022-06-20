@@ -9,14 +9,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import main.java.com.talex.domain.domain.Domain
 import main.java.com.talex.domain.entity.Entity
 
 class FreeWorldScreen : EmptyScreen {
+    val domain = Domain()
     private lateinit var map: TiledMap
     private lateinit var camera: OrthographicCamera
     private lateinit var renderer: OrthogonalTiledMapRenderer
-    private lateinit var player: Entity
-    var entities = mutableListOf<Entity>()
 
     override fun show() {
         map = Maps.level1
@@ -25,15 +25,7 @@ class FreeWorldScreen : EmptyScreen {
 
         val tiles = Texture("tiles.png")
         val grid = TextureRegion.split(tiles, 16, 16)
-
-        player = Entities.createPlayer("grass", grid[6][0], grid[6][1], grid[6][2], grid[6][3]).apply {
-            isMe = true
-            health = 10
-            stamina = 5f
-            damage = 4
-        }
-
-        entities.add(player)
+        domain.onShow(grid)
     }
 
     override fun render(delta: Float) {
@@ -45,41 +37,38 @@ class FreeWorldScreen : EmptyScreen {
         renderer.render()
 
         renderer.asBatch {
-            entities
-                .filter { entity ->
-                    entity.drawTime != 0f || entity.health != 0
-                }.forEach { entity ->
+            domain.entities
+                .filter { entity -> entity.drawTime != 0f || entity.health != 0 }
+                .forEach { entity ->
                     entity.updateDrawTime(delta)
-                    player.move(delta)
+                    entity.move(delta)
 
                     draw(entity.image, entity.x, entity.y, entity.width, entity.height)
                 }
         }
 
-        camera.position.x = player.x
-        camera.position.y = player.y
+        camera.position.x = domain.entities.first().x
+        camera.position.y = domain.entities.first().y
     }
 
     fun Entity.move(delta: Float): Boolean {
         val e = this
         val maxVelocity = 5f
-        if (e.isMe) {
-            val downTouched = Gdx.input.isTouched && Gdx.input.y > Gdx.graphics.height * 2 / 3
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || downTouched) {
-                e.yVelocity = -1 * maxVelocity
-            }
-            val upTouched = Gdx.input.isTouched && Gdx.input.y < Gdx.graphics.height / 3
-            if (Gdx.input.isKeyPressed(Input.Keys.UP) || upTouched) {
-                e.yVelocity = maxVelocity
-            }
-            val leftTouched = Gdx.input.isTouched && Gdx.input.x < Gdx.graphics.width / 3
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || leftTouched) {
-                e.xVelocity = -1 * maxVelocity
-            }
-            val rightTouched = Gdx.input.isTouched && Gdx.input.x > Gdx.graphics.width * 2 / 3
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || rightTouched) {
-                e.xVelocity = maxVelocity
-            }
+        val downTouched = Gdx.input.isTouched && Gdx.input.y > Gdx.graphics.height * 2 / 3
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || downTouched) {
+            e.yVelocity = -1 * maxVelocity
+        }
+        val upTouched = Gdx.input.isTouched && Gdx.input.y < Gdx.graphics.height / 3
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || upTouched) {
+            e.yVelocity = maxVelocity
+        }
+        val leftTouched = Gdx.input.isTouched && Gdx.input.x < Gdx.graphics.width / 3
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || leftTouched) {
+            e.xVelocity = -1 * maxVelocity
+        }
+        val rightTouched = Gdx.input.isTouched && Gdx.input.x > Gdx.graphics.width * 2 / 3
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || rightTouched) {
+            e.xVelocity = maxVelocity
         }
 
         e.xChange = e.xVelocity * delta
