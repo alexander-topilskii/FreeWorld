@@ -2,6 +2,8 @@ package main.java.com.talex.domain.entity
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import kotlin.math.max
 
 class Entity : Comparable<Entity?> {
@@ -33,6 +35,11 @@ class Entity : Comparable<Entity?> {
         if (drawTime >= 0) {
             drawTime = max(0f, drawTime - delta)
         }
+    }
+
+    fun draw(batch: Batch, delta: Float) {
+        updateDrawTime(delta)
+        batch.draw(image, x, y, width, height)
     }
 
     enum class Direction {
